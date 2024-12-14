@@ -1,7 +1,6 @@
 import { Link, NavLink, Outlet, useMatches, type UIMatch } from 'react-router';
 import React from 'react';
 import { HomeIcon } from '~/home-icon';
-import type { Route } from './+types/_layout';
 
 function isBreadcrumbMatch<Data>(match?: UIMatch<Data>): match is UIMatch<
   Data,
