@@ -13,7 +13,6 @@ function isBreadcrumbMatch<Data>(match?: UIMatch<Data>): match is UIMatch<
   if (typeof match.handle !== 'object') return false;
   if (match.handle === null) return false;
   if (!('breadcrumbs' in match.handle)) return false;
-  if (typeof match.handle.breadcrumbs === 'string') return true;
   if (typeof match.handle.breadcrumbs === 'function') return true;
   return false;
 }
