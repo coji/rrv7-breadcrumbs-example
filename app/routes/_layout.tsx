@@ -1,5 +1,4 @@
 import { Link, NavLink, Outlet, useMatches, type UIMatch } from 'react-router';
-import type { Route } from './+types/_layout';
 import React from 'react';
 import { HomeIcon } from '~/home-icon';
 
