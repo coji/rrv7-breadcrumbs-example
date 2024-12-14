@@ -1,12 +1,31 @@
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, NavLink, Outlet, useMatches, type UIMatch } from 'react-router';
 import type { Route } from './+types/_layout';
 import React from 'react';
 import { HomeIcon } from '~/home-icon';
 
-export default function Layout({ matches }: Route.ComponentProps) {
+function isBreadcrumbMatch<Data>(match?: UIMatch<Data>): match is UIMatch<
+  Data,
+  {
+    breadcrumbs: (data: unknown) => string;
+  }
+> {
+  if (!match) return false;
+  if (typeof match.handle !== 'object') return false;
+  if (match.handle === null) return false;
+  if (!('breadcrumbs' in match.handle)) return false;
+  if (typeof match.handle.breadcrumbs === 'string') return true;
+  if (typeof match.handle.breadcrumbs === 'function') return true;
+  return false;
+}
+
+export default function Layout() {
+  const matches = useMatches();
   const breadcrumbs = matches
-    .filter((route) => route?.handle?.breadcrumb)
-    .map((route) => ({ id: route?.id, label: route?.handle.breadcrumb }));
+    .filter((match) => isBreadcrumbMatch(match))
+    .map((match) => ({
+      id: match.id,
+      breadcrumbs: match.handle.breadcrumbs(match.data),
+    }));
 
   return (
     <div className="grid grid-cols-1 grid-rows-[auto,1fr,auto] min-h-dvh">
@@ -16,7 +35,7 @@ export default function Layout({ matches }: Route.ComponentProps) {
             React Router v7 Breadcrumbs Example
           </h1>
         </Link>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           <NavLink to="/">
             <HomeIcon /> Home
           </NavLink>
@@ -28,17 +47,17 @@ export default function Layout({ matches }: Route.ComponentProps) {
         {/* breadcrumbs */}
         {breadcrumbs.length > 0 && (
           <nav className="px-2 py-1">
-            <ul className="flex gap-4 text-slate-500 text-xs items-center">
+            <ul className="flex gap-2 text-slate-500 text-xs items-center">
               <li>
                 <NavLink to="/">
-                  <HomeIcon />
+                  <HomeIcon className="w-3 h-3" />
                 </NavLink>
               </li>
 
               {breadcrumbs.map((route) => (
                 <React.Fragment key={route.id}>
                   <li>/</li>
-                  <li>{route.label}</li>
+                  <li>{route.breadcrumbs}</li>
                 </React.Fragment>
               ))}
             </ul>

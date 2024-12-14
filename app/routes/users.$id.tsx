@@ -1,5 +1,5 @@
 export const handle = {
-  breadcrumb: 'User Details',
+  breadcrumbs: () => 'User Details',
 };
 
 export default function UserDetailPage() {
